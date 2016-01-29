@@ -1,0 +1,9 @@
+EKIR/bin/*
+EKIR/obj/*
+EKIR/Setup/*
+*.config
+*.db
+*.manifest
+*.pdf
+*.suo
+*.user
