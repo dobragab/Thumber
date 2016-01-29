@@ -54,7 +54,7 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(260, 23);
             this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "Tallózás";
+            this.btnOK.Text = "Browse";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 

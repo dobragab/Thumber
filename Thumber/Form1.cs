@@ -93,7 +93,7 @@ namespace Thumber
                     }
                     catch(Exception x)
                     {
-                        OutString += x.Message + "\n" + x.StackTrace;
+                        OutString += x.Message + "\n" + x.StackTrace + "\n";
                     }
                 }
             };
@@ -116,8 +116,6 @@ namespace Thumber
             this.Enabled = false;
             
             bgw.RunWorkerAsync();
-
-
         }
     }
 }
