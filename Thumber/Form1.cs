@@ -22,9 +22,14 @@ namespace Thumber
         {
             Thumb[] thumbs =
             {
-                new Thumb("thumb", 300),
-                new Thumb("mini", 235),
-                new Thumb("micro", 155),
+                new Thumb("logout", 611),   // logout // or 628?
+                new Thumb("forum", 480),    // forum
+                new Thumb("thumb", 300),    // one only
+                new Thumb("mini", 235),     // 2
+                new Thumb("micro", 155),    // 3
+                new Thumb("nano", 115),     // 4
+                new Thumb("pico", 90),      // 5
+                new Thumb("femto", 75),     // 6
             };
 
             lbThumb.Items.AddRange(thumbs);
