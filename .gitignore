@@ -1,6 +1,5 @@
-EKIR/bin/*
-EKIR/obj/*
-EKIR/Setup/*
+Thumber/bin/*
+Thumber/obj/*
 *.config
 *.db
 *.manifest
