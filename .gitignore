@@ -1,5 +1,6 @@
 Thumber/bin/*
 Thumber/obj/*
+Thumber/test/*
 *.config
 *.db
 *.manifest
@@ -7,3 +8,4 @@ Thumber/obj/*
 *.suo
 *.user
 *.jpg
+*.png

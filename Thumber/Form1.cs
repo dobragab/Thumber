@@ -64,8 +64,10 @@ namespace Thumber
                 for (int i = 0; i < ofd.FileNames.Length; ++i)
                 {
                     string filename = ofd.FileNames[i];
+                    string ext = Path.GetExtension(filename);
+                    bool png = ext.ToUpper() == "PNG";
 
-                    string newfilename = Path.ChangeExtension(String.Format("{0}_{1}", Path.GetFileNameWithoutExtension(filename), thumb.name), Path.GetExtension(filename));
+                    string newfilename = Path.ChangeExtension(String.Format("{0}_{1}", Path.GetFileNameWithoutExtension(filename), thumb.name), ext);
                     string newfile = Path.Combine(Path.GetDirectoryName(filename), newfilename);
 
                     if (File.Exists(newfile))
@@ -74,8 +76,7 @@ namespace Thumber
                         continue;
                     }
 
-                    string parameters = String.Format("-o \"{0}\" -overwrite -quiet -out jpeg -ratio -resize {2} 0 \"{1}\"", newfile, filename, thumb.width);
-                    OutString += filename + " " + newfile + "\n";
+                    string parameters = String.Format("-o \"{0}\" -overwrite -quiet -out {3} -ratio -resize {2} 0 \"{1}\"", newfile, filename, thumb.width, png ? "png" : "jpeg");
 
                     ProcessStartInfo info = new ProcessStartInfo();
                     info.FileName = "nconvert.exe";
@@ -101,6 +102,7 @@ namespace Thumber
                 progressBar1.Value = 1;
                 lbState.Visible = false;
                 this.Enabled = true;
+                OutString += "Completed.";
                 MessageBox.Show(OutString);
             };
 

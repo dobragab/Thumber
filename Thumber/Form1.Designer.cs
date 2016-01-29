@@ -60,7 +60,7 @@
             // 
             // ofd
             // 
-            this.ofd.Filter = "JPG Files (*.jpg; *.jpeg)|*.jpg;*.jpeg";
+            this.ofd.Filter = "JPG or PNG Files (*.jpg; *.jpeg; *.png)| *.jpg; *.jpeg; *.png";
             this.ofd.Multiselect = true;
             // 
             // lbState
