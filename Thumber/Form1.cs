@@ -67,7 +67,7 @@ namespace Thumber
                     {
                         string filename = ofd.FileNames[i];
                         string ext = Path.GetExtension(filename);
-                        bool png = ext.ToUpper() == "PNG";
+                        bool png = ext.ToUpper() == ".PNG";
 
                         string newfilename = Path.ChangeExtension(String.Format("{0}_{1}", Path.GetFileNameWithoutExtension(filename), thumb.name), ext);
                         string newfile = Path.Combine(Path.GetDirectoryName(filename), newfilename);
