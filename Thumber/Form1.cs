@@ -137,5 +137,10 @@ namespace Thumber
 
             ConvertFiles(e.GetFiles(), thumb);
         }
+
+        private void lbThumb_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnOK_Click(sender, e);
+        }
     }
 }

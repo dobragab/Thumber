@@ -45,6 +45,7 @@
             this.lbThumb.Name = "lbThumb";
             this.lbThumb.Size = new System.Drawing.Size(260, 212);
             this.lbThumb.TabIndex = 0;
+            this.lbThumb.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbThumb_MouseDoubleClick);
             // 
             // btnOK
             // 
