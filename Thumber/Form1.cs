@@ -46,12 +46,17 @@ namespace Thumber
             if (result != DialogResult.OK)
                 return;
 
+            ConvertFiles(ofd.FileNames, thumb);
+        }
+
+        private void ConvertFiles(string[] files, Thumb thumb)
+        {
             progressBar1.Minimum = 1;
-            progressBar1.Maximum = ofd.FileNames.Length;
+            progressBar1.Maximum = files.Length;
             progressBar1.Step = 1;
             progressBar1.Value = 1;
 
-            lbState.Text = String.Format("{0}/{1}", 0, ofd.FileNames.Length);
+            lbState.Text = String.Format("{0}/{1}", 0, files.Length);
             lbState.Visible = true;
 
             string OutString = "";
@@ -61,11 +66,11 @@ namespace Thumber
 
             bgw.DoWork += delegate (object o, DoWorkEventArgs dwea)
             {
-                for (int i = 0; i < ofd.FileNames.Length; ++i)
+                for (int i = 0; i < files.Length; ++i)
                 {
                     try
                     {
-                        string filename = ofd.FileNames[i];
+                        string filename = files[i];
                         string ext = Path.GetExtension(filename);
                         bool png = ext.ToUpper() == ".PNG";
 
@@ -91,7 +96,7 @@ namespace Thumber
 
                         bgw.ReportProgress(i);
                     }
-                    catch(Exception x)
+                    catch (Exception x)
                     {
                         OutString += x.Message + "\n" + x.StackTrace + "\n";
                     }
@@ -114,8 +119,23 @@ namespace Thumber
             };
 
             this.Enabled = false;
-            
+
             bgw.RunWorkerAsync();
+        }
+
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.HasFiles())
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            Thumb thumb = lbThumb.SelectedItem as Thumb;
+            if (thumb == null)
+                return;
+
+            ConvertFiles(e.GetFiles(), thumb);
         }
     }
 }
