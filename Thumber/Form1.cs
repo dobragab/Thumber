@@ -47,12 +47,32 @@ namespace Thumber
             ConvertFiles(ofd.FileNames, thumb);
         }
 
+        private void ProgressInit(int max)
+        {
+            progressBar1.Maximum = max;
+
+            lbState.Text = String.Format("{0}/{1}", 0, max);
+            lbState.Visible = true;
+
+            this.Enabled = false;
+        }
+
+        private void ProgressStep(int max, int current)
+        {
+            progressBar1.PerformStepNoAnimation();
+            lbState.Text = String.Format("{0}/{1}", current, max);
+        }
+
+        private void ProgressFinish()
+        {
+            progressBar1.Value = 0;
+            lbState.Visible = false;
+            this.Enabled = true;
+        }
+
         private void ConvertFiles(string[] files, Thumb thumb)
         {
-            progressBar1.Maximum = files.Length;
-
-            lbState.Text = String.Format("{0}/{1}", 0, files.Length);
-            lbState.Visible = true;
+            ProgressInit(files.Length);
 
             string OutString = "";
 
@@ -65,30 +85,11 @@ namespace Thumber
                 {
                     try
                     {
-                        string filename = files[i];
-                        string ext = Path.GetExtension(filename);
-                        bool png = ext.ToUpper() == ".PNG";
+                        ConvertParams oldparams = ConvertParams.GetParams(files[i]);
+                        ConvertParams newparams = ConvertParams.GetConvertedParams(oldparams, thumb);
 
-                        string newfilename = Path.ChangeExtension(String.Format("{0}_{1}", Path.GetFileNameWithoutExtension(filename), thumb.name), ext);
-                        string newfile = Path.Combine(Path.GetDirectoryName(filename), newfilename);
-
-                        if (File.Exists(newfile))
-                        {
-                            OutString += newfilename + " already exists. Skipping.";
-                        }
-                        else
-                        {
-                            string parameters = String.Format("-o \"{0}\" -overwrite -quiet -out {3} -ratio -resize {2} 0 \"{1}\"", newfile, filename, thumb.width, png ? "png" : "jpeg");
-
-                            ProcessStartInfo info = new ProcessStartInfo("nconvert.exe", parameters);
-                            info.CreateNoWindow = true;
-                            info.WindowStyle = ProcessWindowStyle.Hidden;
-
-                            Process proc = Process.Start(info);
-                            proc.WaitForExit();
-                        }
-
-                        Thread.Sleep(500);
+                        if(!ConvertParams.ConvertFile(oldparams, newparams, thumb))
+                            OutString += newparams.filename + " already exists. Skipping.\n";
 
                         bgw.ReportProgress(i+1);
                     }
@@ -101,20 +102,15 @@ namespace Thumber
 
             bgw.ProgressChanged += delegate (object o, ProgressChangedEventArgs pcea)
             {
-                progressBar1.PerformStepNoAnimation();
-                lbState.Text = String.Format("{0}/{1}", pcea.ProgressPercentage, ofd.FileNames.Length);
+                ProgressStep(ofd.FileNames.Length, pcea.ProgressPercentage);
             };
 
             bgw.RunWorkerCompleted += delegate (object o, RunWorkerCompletedEventArgs rwcea)
             {
                 OutString += "Completed.";
                 MessageBox.Show(OutString);
-                progressBar1.Value = 0;
-                lbState.Visible = false;
-                this.Enabled = true;
+                ProgressFinish();
             };
-
-            this.Enabled = false;
 
             bgw.RunWorkerAsync();
         }
