@@ -101,7 +101,6 @@
             this.Controls.Add(this.lbThumb);
             this.Name = "Form1";
             this.Text = "Thumber";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.ResumeLayout(false);

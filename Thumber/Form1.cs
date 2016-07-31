@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Threading;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,10 +17,7 @@ namespace Thumber
         public Form1()
         {
             InitializeComponent();
-        }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
             Thumb[] thumbs =
             {
                 new Thumb("logout", 611),   // logout // or 628?
@@ -51,10 +49,7 @@ namespace Thumber
 
         private void ConvertFiles(string[] files, Thumb thumb)
         {
-            progressBar1.Minimum = 1;
             progressBar1.Maximum = files.Length;
-            progressBar1.Step = 1;
-            progressBar1.Value = 1;
 
             lbState.Text = String.Format("{0}/{1}", 0, files.Length);
             lbState.Visible = true;
@@ -80,21 +75,22 @@ namespace Thumber
                         if (File.Exists(newfile))
                         {
                             OutString += newfilename + " already exists. Skipping.";
-                            continue;
+                        }
+                        else
+                        {
+                            string parameters = String.Format("-o \"{0}\" -overwrite -quiet -out {3} -ratio -resize {2} 0 \"{1}\"", newfile, filename, thumb.width, png ? "png" : "jpeg");
+
+                            ProcessStartInfo info = new ProcessStartInfo("nconvert.exe", parameters);
+                            info.CreateNoWindow = true;
+                            info.WindowStyle = ProcessWindowStyle.Hidden;
+
+                            Process proc = Process.Start(info);
+                            proc.WaitForExit();
                         }
 
-                        string parameters = String.Format("-o \"{0}\" -overwrite -quiet -out {3} -ratio -resize {2} 0 \"{1}\"", newfile, filename, thumb.width, png ? "png" : "jpeg");
+                        Thread.Sleep(500);
 
-                        ProcessStartInfo info = new ProcessStartInfo();
-                        info.FileName = "nconvert.exe";
-                        info.Arguments = parameters;
-                        info.CreateNoWindow = true;
-                        info.WindowStyle = ProcessWindowStyle.Hidden;
-
-                        Process proc = Process.Start(info);
-                        proc.WaitForExit();
-
-                        bgw.ReportProgress(i);
+                        bgw.ReportProgress(i+1);
                     }
                     catch (Exception x)
                     {
@@ -105,17 +101,17 @@ namespace Thumber
 
             bgw.ProgressChanged += delegate (object o, ProgressChangedEventArgs pcea)
             {
+                progressBar1.PerformStepNoAnimation();
                 lbState.Text = String.Format("{0}/{1}", pcea.ProgressPercentage, ofd.FileNames.Length);
-                progressBar1.PerformStep();
             };
 
             bgw.RunWorkerCompleted += delegate (object o, RunWorkerCompletedEventArgs rwcea)
             {
-                progressBar1.Value = 1;
-                lbState.Visible = false;
-                this.Enabled = true;
                 OutString += "Completed.";
                 MessageBox.Show(OutString);
+                progressBar1.Value = 0;
+                lbState.Visible = false;
+                this.Enabled = true;
             };
 
             this.Enabled = false;
@@ -142,5 +138,6 @@ namespace Thumber
         {
             btnOK_Click(sender, e);
         }
+
     }
 }
